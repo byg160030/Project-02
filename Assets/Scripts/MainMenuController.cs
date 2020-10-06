@@ -22,6 +22,16 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    public void Reset()
+    {
+
+    }
+
     // Update is called once per frame
     void Update()
     {

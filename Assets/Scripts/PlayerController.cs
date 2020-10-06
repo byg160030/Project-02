@@ -18,6 +18,14 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    private void Update()
+    {
+        if (Level01Controller.GameIsPaused)
+        {
+            UnlockMouse();
+        }
+    }
+
     private void Awake()
     {
         _input = GetComponent<FPSInput>();
@@ -56,5 +64,10 @@ public class PlayerController : MonoBehaviour
     {
         // apply our jump force to our motor
         _motor.Jump(_jumpStrength);
+    }
+
+    void UnlockMouse()
+    {
+        Cursor.lockState = CursorLockMode.None;
     }
 }

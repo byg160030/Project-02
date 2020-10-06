@@ -11,6 +11,8 @@ public class Level01Controller : MonoBehaviour
 
     public static bool GameIsPaused = false;
 
+    public GameObject pauseMenuUI;
+
     private void Update()
     {
         // Increase Score
@@ -21,21 +23,43 @@ public class Level01Controller : MonoBehaviour
         }
         // Exit Level
         //TODO bring up popup menu for navigation
-       
-         if (Input.GetKeyDown(KeyCode.Escape))
-         {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
             if (GameIsPaused)
             {
                 Resume();
-            }else
+            }
+            else
             {
                 Pause();
             }
-         }
-
-
-
+        }
     }
+
+    public void Resume()
+    {
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+        GameIsPaused = false;
+    }
+
+    void Pause()
+    {
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;
+        GameIsPaused = true;
+    }
+
+    public void LoadMenu()
+    {
+       ExitLevel();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     public void IncreaseScore(int scoreIncrease)
     {
         // increase score
