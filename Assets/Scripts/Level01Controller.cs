@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class Level01Controller : MonoBehaviour
 {
     [SerializeField] Text _currentScoreTextView;
-
     int _currentScore;
+
+    public static bool GameIsPaused = false;
 
     private void Update()
     {
@@ -20,10 +21,20 @@ public class Level01Controller : MonoBehaviour
         }
         // Exit Level
         //TODO bring up popup menu for navigation
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ExitLevel();
-        }
+       
+         if (Input.GetKeyDown(KeyCode.Escape))
+         {
+            if (GameIsPaused)
+            {
+                Resume();
+            }else
+            {
+                Pause();
+            }
+         }
+
+
+
     }
     public void IncreaseScore(int scoreIncrease)
     {
