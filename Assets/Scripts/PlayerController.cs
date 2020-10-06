@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     FPSInput _input = null;
     FPSMotor _motor = null;
 
-    [SerializeField] float _moveSpeed = .1f;
+    [SerializeField] public float _moveSpeed = .1f;
     [SerializeField] float _turnSpeed = 6f;
     [SerializeField] float _jumpStrength = 10f;
 
