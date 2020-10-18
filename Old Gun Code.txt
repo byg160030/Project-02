@@ -1,0 +1,47 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Gun : MonoBehaviour
+{
+    //Variables
+    public Transform spawnPoint;
+    public float distance = 15f;
+
+    public AudioSource shootingSound;
+
+    public ParticleSystem muzzleFlash;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetButtonDown("Fire1"))
+            Shoot();
+    }
+
+    private void Shoot()
+    {
+        //Variables
+        RaycastHit hit;
+
+        shootingSound.Play();
+
+        muzzleFlash.Play();
+        
+        if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hit, distance))
+        {
+            Debug.Log("Hit");
+
+            if (hit.transform.tag != "Ground" && hit.transform.tag != "Player");
+               
+        }
+        else
+            Debug.Log("Not hit");
+    }
+}
