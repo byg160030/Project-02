@@ -1,47 +1,48 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
     //Variables
     public Transform spawnPoint;
-    public float distance = 15f;
+    public float damage = 10f;
+    public float range = 100f;
+    public float impactForce = 30f;
 
-    public AudioSource shootingSound;
-
+    public Camera fpsCam;
     public ParticleSystem muzzleFlash;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+    public GameObject impactEffect;
+    public AudioSource shootingSound;
     // Update is called once per frame
     void Update()
     {
         if (Input.GetButtonDown("Fire1"))
+        {
             Shoot();
+        }
     }
-
-    private void Shoot()
+    void Shoot()
     {
-        //Variables
-        RaycastHit hit;
-
+        muzzleFlash.Play();
         shootingSound.Play();
 
-        muzzleFlash.Play();
-        
-        if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hit, distance))
+        RaycastHit hit;
+        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
         {
-            Debug.Log("Hit");
+            Debug.Log(hit.transform.name);
 
-            if (hit.transform.tag != "Ground" && hit.transform.tag != "Player");
-               
+            Target target = hit.transform.GetComponent<Target>();
+            if (target != null)
+            {
+                target.TakeDamage(damage);
+            }
+
+            if (hit.rigidbody != null)
+            {
+                hit.rigidbody.AddForce(-hit.normal * impactForce);
+            }
+
+            GameObject impactGO = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            Destroy(impactGO, 2f);
         }
-        else
-            Debug.Log("Not hit");
     }
 }
