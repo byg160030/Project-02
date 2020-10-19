@@ -13,6 +13,8 @@ public class ProjectileAttack : MonoBehaviour
     public float timeBetweenShooting, spread, reloadTime, timeBetweenShots;
     public int magazineSize, bulletsPerTap;
     public bool allowButtonHold;
+    public float impactForce = 30f;
+    public float damage = 10f;
 
     int bulletsLeft, bulletsShot;
 
@@ -20,9 +22,16 @@ public class ProjectileAttack : MonoBehaviour
     bool shooting, readyToShoot, reloading;
 
     //Reference
-    public Camera camera;
+    public Camera fpsCam;
     public Transform attackPoint;
 
+    //Graphics
+    public GameObject muzzleFlash;
+    public GameObject impactEffect;
+    public AudioSource shootingSound;
+    public TextMeshProUGUI ammunitionDisplay;
+
+    //bug fixing
     public bool allowInvoke = true;
 
     private void Awake()
@@ -35,6 +44,10 @@ public class ProjectileAttack : MonoBehaviour
     private void Update()
     {
         MyInput();
+
+        //Show ammo
+        if (ammunitionDisplay != null)
+            ammunitionDisplay.SetText(bulletsLeft / bulletsPerTap + " / " + magazineSize / bulletsPerTap);
     }
 
     private void MyInput()
@@ -42,6 +55,11 @@ public class ProjectileAttack : MonoBehaviour
         //Check if allowed to hold down button and take corresponding input
         if (allowButtonHold) shooting = Input.GetKey(KeyCode.Mouse0);
         else shooting = Input.GetKeyDown(KeyCode.Mouse0);
+
+        //Reloading
+        if (Input.GetKeyDown(KeyCode.R) && bulletsLeft < magazineSize && !reloading) Reload();
+        //Reload automatically when out of Ammo
+        if (readyToShoot && shooting && !reloading && bulletsLeft <= 0) Reload();
 
         //Shooting
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
@@ -58,7 +76,7 @@ public class ProjectileAttack : MonoBehaviour
         readyToShoot = false;
 
         //Hit point using raycast
-        Ray ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Ray ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
         //check if ray hits something
@@ -85,8 +103,25 @@ public class ProjectileAttack : MonoBehaviour
 
         //Add forces to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
-        currentBullet.GetComponent<Rigidbody>().AddForce(camera.transform.up * upwardForce, ForceMode.Impulse);
+        currentBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * upwardForce, ForceMode.Impulse);
 
+        //Instantiate muzzle flash
+        shootingSound.Play();
+        if (muzzleFlash != null)
+            Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
+        Target target = hit.transform.GetComponent<Target>();
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+        }
+
+        if (hit.rigidbody != null)
+        {
+            hit.rigidbody.AddForce(-hit.normal * impactForce);
+        }
+
+        GameObject impactGO = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        Destroy(impactGO, 2f);
 
         bulletsLeft--;
         bulletsShot++;
@@ -118,6 +153,7 @@ public class ProjectileAttack : MonoBehaviour
 
     private void ReloadFinished()
     {
-
+        bulletsLeft = magazineSize;
+        reloading = false;
     }
 }

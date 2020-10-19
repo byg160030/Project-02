@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class Sprint : MonoBehaviour
 {
-    PlayerController basicMovement;
+    PlayerMovement basicMovement;
     public float speedBoost = 0.3f;
     void Start()
     {
-        basicMovement = GetComponent<PlayerController>();
+        basicMovement = GetComponent<PlayerMovement>();
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
-            basicMovement._moveSpeed += speedBoost;
+            basicMovement.speed += speedBoost;
         else if (Input.GetKeyUp(KeyCode.LeftShift))
-            basicMovement._moveSpeed -= speedBoost;
+            basicMovement.speed -= speedBoost;
     }
 }
