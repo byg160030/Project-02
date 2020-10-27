@@ -6,7 +6,7 @@ using UnityEngine;
 public class Sprint : MonoBehaviour
 {
     PlayerMovement basicMovement;
-    public float speedBoost = 0.3f;
+    public float speedBoost = 1f;
     void Start()
     {
         basicMovement = GetComponent<PlayerMovement>();

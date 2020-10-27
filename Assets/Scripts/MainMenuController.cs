@@ -29,7 +29,8 @@ public class MainMenuController : MonoBehaviour
 
     public void Reset()
     {
-
+        int highScore = 0;
+        _highScoreTextView.text = highScore.ToString();
     }
 
     // Update is called once per frame
